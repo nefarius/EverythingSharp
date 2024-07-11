@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EverythingSharp.Enums
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum Error
     {
         Ok = 0,

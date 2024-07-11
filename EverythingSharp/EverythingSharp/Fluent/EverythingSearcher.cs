@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
+
 using EverythingSharp.Enums;
 using EverythingSharp.Exceptions;
 using EverythingSharp.Extensions;
 
 namespace EverythingSharp.Fluent
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class EverythingSearcher : EverythingBase, IDisposable
     {
+        public void Dispose()
+        {
+            Everything_CleanUp();
+        }
+
         public EverythingSearchOptions SearchFor(string query)
         {
             return new EverythingSearchOptions(this).SetQuery(query);
@@ -20,12 +28,17 @@ namespace EverythingSharp.Fluent
              * Set options
              */
             Everything_SetSearch(options.Query);
-            Everything_SetSort((uint) options.Sort);
-            Everything_SetRequestFlags((uint) options.Flags);
-            if(options.Offset.HasValue)
+            Everything_SetSort((uint)options.Sort);
+            Everything_SetRequestFlags((uint)options.Flags);
+            if (options.Offset.HasValue)
+            {
                 Everything_SetOffset(options.Offset.Value);
-            if(options.MaxResults.HasValue)
+            }
+
+            if (options.MaxResults.HasValue)
+            {
                 Everything_SetMax(options.MaxResults.Value);
+            }
 
             /*
              * Perform the search
@@ -43,7 +56,7 @@ namespace EverythingSharp.Fluent
             const int fileAndPathSize = 260;
             StringBuilder fileAndPathBuffer = new StringBuilder(fileAndPathSize);
             uint numResults = Everything_GetNumResults();
-            bool areAttributesIndexed = Everything_IsFileInfoIndexed((uint) FileInfoType.Attributes);
+            bool areAttributesIndexed = Everything_IsFileInfoIndexed((uint)FileInfoType.Attributes);
 
             for (uint index = 0; index < numResults; index++)
             {
@@ -60,20 +73,22 @@ namespace EverythingSharp.Fluent
                 {
                     Size = size,
                     FullPath = fileAndPathBuffer.ToString(),
-                    DateCreated = dateCreated > 0 ? DateTime.FromFileTime(dateCreated) : (DateTime?) null,
-                    DateAccessed = dateAccessed > 0 ? DateTime.FromFileTime(dateAccessed) : (DateTime?) null,
-                    DateModified = dateModified > 0 ? DateTime.FromFileTime(dateModified) : (DateTime?) null,
-                    DateRecentlyChanged = dateRecentlyChanged > 0 ? DateTime.FromFileTime(dateRecentlyChanged) : (DateTime?) null,
-                    DateRun = dateRun > 0 ? DateTime.FromFileTime(dateRun) : (DateTime?) null,
+                    DateCreated = dateCreated > 0 ? DateTime.FromFileTime(dateCreated) : (DateTime?)null,
+                    DateAccessed = dateAccessed > 0 ? DateTime.FromFileTime(dateAccessed) : (DateTime?)null,
+                    DateModified = dateModified > 0 ? DateTime.FromFileTime(dateModified) : (DateTime?)null,
+                    DateRecentlyChanged =
+                        dateRecentlyChanged > 0 ? DateTime.FromFileTime(dateRecentlyChanged) : (DateTime?)null,
+                    DateRun = dateRun > 0 ? DateTime.FromFileTime(dateRun) : (DateTime?)null,
                     RunCount = Everything_GetResultRunCount(index),
-                    Attributes = areAttributesIndexed ? Everything_GetResultAttributes(index) : (uint?) null,
-                    Type = Everything_IsFileResult(index) ? EntryType.File : Everything_IsVolumeResult(index) ? EntryType.Volume : EntryType.Folder
+                    Attributes = areAttributesIndexed ? Everything_GetResultAttributes(index) : (uint?)null,
+                    Type = Everything_IsFileResult(index) ? EntryType.File :
+                        Everything_IsVolumeResult(index) ? EntryType.Volume : EntryType.Folder
                 };
             }
         }
 
         /// <summary>
-        /// Increments the run count for the specified result and returns the new run count.
+        ///     Increments the run count for the specified result and returns the new run count.
         /// </summary>
         /// <param name="result">The search result to increase the run counter for.</param>
         /// <returns>The new run count.</returns>
@@ -83,7 +98,7 @@ namespace EverythingSharp.Fluent
         }
 
         /// <summary>
-        /// Increments the run count for the specified path and returns the new run count.
+        ///     Increments the run count for the specified path and returns the new run count.
         /// </summary>
         /// <returns>The new run count.</returns>
         public uint IncrementRunCount(string path)
@@ -92,16 +107,11 @@ namespace EverythingSharp.Fluent
         }
 
         /// <summary>
-        /// Gets the run count for the given path.
+        ///     Gets the run count for the given path.
         /// </summary>
         public uint GetRunCountForFile(string path)
         {
             return Everything_GetRunCountFromFileName(path);
-        }
-
-        public void Dispose()
-        {
-            Everything_CleanUp();
         }
     }
 }

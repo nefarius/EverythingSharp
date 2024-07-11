@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 using EverythingSharp.Enums;
 
 namespace EverythingSharp.Fluent
 {
     public class EverythingSearchOptions
     {
-        private EverythingSearcher _searcher;
-
-        internal string Query { get; set; }
-        internal uint? MaxResults { get; set; }
-        internal uint? Offset { get; set; }
-        internal Sort Sort { get; set; }
-        internal RequestFlags Flags { get; set; }
+        private readonly EverythingSearcher _searcher;
 
         internal EverythingSearchOptions(EverythingSearcher searcher)
         {
@@ -24,6 +15,12 @@ namespace EverythingSharp.Fluent
             Sort = Sort.NameAscending;
             Flags = RequestFlags.FullPathAndFileName;
         }
+
+        internal string Query { get; set; }
+        internal uint? MaxResults { get; set; }
+        internal uint? Offset { get; set; }
+        internal Sort Sort { get; set; }
+        internal RequestFlags Flags { get; set; }
 
         internal EverythingSearchOptions SetQuery(string query)
         {

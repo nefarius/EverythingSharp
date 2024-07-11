@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using System.Threading.Tasks;
+
 using EverythingSharp.Enums;
 using EverythingSharp.Exceptions;
 using EverythingSharp.Extensions;
 
 namespace EverythingSharp
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Everything : EverythingBase, IDisposable
     {
+        public void Dispose()
+        {
+            Everything_CleanUp();
+        }
+
         /// <summary>
-        /// Performs a search for the specified query and sorts the results.
+        ///     Performs a search for the specified query and sorts the results.
         /// </summary>
         /// <param name="query">The search query.</param>
         /// <param name="maxResults">The maximum number of results to return. If less that 0, all results are returned.</param>
@@ -20,20 +26,26 @@ namespace EverythingSharp
         /// <param name="requestFlags">The fields to return.</param>
         /// <exception cref="EverythingException">Thrown if the search is unsuccessful.</exception>
         /// <returns>The results of the search.</returns>
-        public IEnumerable<EverythingResult> Search(string query, int maxResults = -1, int offset = -1, Sort sort = Sort.NameAscending, RequestFlags requestFlags = RequestFlags.FullPathAndFileName)
+        public IEnumerable<EverythingResult> Search(string query, int maxResults = -1, int offset = -1,
+            Sort sort = Sort.NameAscending, RequestFlags requestFlags = RequestFlags.FullPathAndFileName)
         {
             Everything_SetSearch(query);
-            Everything_SetSort((uint) sort);
-            Everything_SetRequestFlags((uint) requestFlags);
-            if(maxResults > -1)
-                Everything_SetMax((uint) maxResults);
-            if(offset > -1)
-                Everything_SetOffset((uint) offset);
+            Everything_SetSort((uint)sort);
+            Everything_SetRequestFlags((uint)requestFlags);
+            if (maxResults > -1)
+            {
+                Everything_SetMax((uint)maxResults);
+            }
+
+            if (offset > -1)
+            {
+                Everything_SetOffset((uint)offset);
+            }
 
             bool success = Everything_Query(true);
             if (!success)
             {
-                Error errorCode = (Error) Everything_GetLastError();
+                Error errorCode = (Error)Everything_GetLastError();
                 throw new EverythingException(errorCode, errorCode.GetDescription());
             }
 
@@ -57,11 +69,12 @@ namespace EverythingSharp
                 {
                     Size = size,
                     FullPath = fileAndPathBuffer.ToString(),
-                    DateCreated = dateCreated > 0 ? DateTime.FromFileTime(dateCreated) : (DateTime?) null, 
-                    DateAccessed = dateAccessed > 0 ? DateTime.FromFileTime(dateAccessed) : (DateTime?) null,
-                    DateModified = dateModified > 0 ? DateTime.FromFileTime(dateModified) : (DateTime?) null,
-                    DateRecentlyChanged = dateRecentlyChanged > 0 ? DateTime.FromFileTime(dateRecentlyChanged) : (DateTime?) null,
-                    DateRun = dateRun > 0 ? DateTime.FromFileTime(dateRun) : (DateTime?) null,
+                    DateCreated = dateCreated > 0 ? DateTime.FromFileTime(dateCreated) : (DateTime?)null,
+                    DateAccessed = dateAccessed > 0 ? DateTime.FromFileTime(dateAccessed) : (DateTime?)null,
+                    DateModified = dateModified > 0 ? DateTime.FromFileTime(dateModified) : (DateTime?)null,
+                    DateRecentlyChanged =
+                        dateRecentlyChanged > 0 ? DateTime.FromFileTime(dateRecentlyChanged) : (DateTime?)null,
+                    DateRun = dateRun > 0 ? DateTime.FromFileTime(dateRun) : (DateTime?)null,
                     RunCount = Everything_GetResultRunCount(index),
                     Attributes = Everything_GetResultAttributes(index)
                 };
@@ -69,18 +82,13 @@ namespace EverythingSharp
         }
 
         /// <summary>
-        /// Increments the run counter for the specified result and returns the new run count.
+        ///     Increments the run counter for the specified result and returns the new run count.
         /// </summary>
         /// <param name="result">The search result to increase the run counter for.</param>
         /// <returns>The new run count.</returns>
         public uint IncrementRunCount(EverythingResult result)
         {
             return Everything_IncRunCountFromFileName(result.FullPath);
-        }
-
-        public void Dispose()
-        {
-            Everything_CleanUp();
         }
     }
 }

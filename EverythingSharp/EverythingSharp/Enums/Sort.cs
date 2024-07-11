@@ -1,8 +1,11 @@
-﻿namespace EverythingSharp.Enums
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace EverythingSharp.Enums
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum Sort
     {
-        NameAscending= 1,
+        NameAscending = 1,
         NameDescending = 2,
         PathAscending = 3,
         PathDescending = 4,

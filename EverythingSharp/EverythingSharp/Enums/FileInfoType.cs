@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace EverythingSharp.Enums
 {
-    enum FileInfoType : uint
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    internal enum FileInfoType : uint
     {
         FileSize = 1,
         FFolderSize = 2,
