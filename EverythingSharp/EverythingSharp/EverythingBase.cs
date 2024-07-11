@@ -1,8 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace EverythingSharp
 {
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public abstract class EverythingBase
     {
         [DllImport("Everything32.dll", CharSet = CharSet.Unicode)]
